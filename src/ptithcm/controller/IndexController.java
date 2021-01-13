@@ -13,6 +13,7 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -84,6 +85,8 @@ public class IndexController {
 	
 	@RequestMapping("bicycles")
 	public String bicycles() {
+		AdminController.checklogin = false;
+		System.out.println(AdminController.checklogin);
 		return "bicycles";
 	}
 
@@ -111,7 +114,21 @@ public class IndexController {
 		return "cart";
 	}
 	@RequestMapping(value="cart", method=RequestMethod.POST)
-	public String cart(ModelMap model, @ModelAttribute("orders") Orders orders) {
+	public String cart(ModelMap model, @ModelAttribute("orders") Orders orders,BindingResult error) {
+		
+		
+//		if (orders.getName().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN YOUR NAME!");
+//		else if (orders.getPhone().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN YOUR PHONE NUMBER!");
+//		else if (orders.getPhone().length() != 10) model.addAttribute("message","PLEASE FILL IN CORRECT PHONE NUMBER!");
+//		else if (orders.getEmail().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN YOUR EMAIL ADDRESS!");
+//		else if (orders.getAddress().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN YOUR ADDRESS!");
+		if (orders.getName().isEmpty() == true) error.rejectValue("name","orders","PLEASE FILL IN YOUR NAME!");
+		else if (orders.getPhone().isEmpty() == true) error.rejectValue("phone","orders","PLEASE FILL IN YOUR PHONE NUMBER!");
+		else if (orders.getPhone().length() != 10) error.rejectValue("phone","orders","PLEASE FILL IN CORRECT PHONE NUMBER!");
+		else if (orders.getEmail().isEmpty() == true) error.rejectValue("email","orders","PLEASE FILL IN YOUR EMAIL ADDRESS!");
+		else if (orders.getAddress().isEmpty() == true)error.rejectValue("address","orders","PLEASE FILL IN YOUR ADDRESS!");
+		if (error.hasErrors()) model.addAttribute("message","PLEASE CORRECT AND TRY AGAIN!");
+		else {
 		Session session = factory.openSession();
 		Transaction transaction = session.beginTransaction();
 		String hql = "UPDATE Products SET quantity = quantity - 1 WHERE id='"+orders.getProducts().getId()+"'";
@@ -133,6 +150,7 @@ public class IndexController {
 			model.addAttribute("message","Order failed");
 		}
 		session.close();
+		}
 		return "cart";
 	}
 	public boolean SendMail(Orders orders) {

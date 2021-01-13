@@ -90,7 +90,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 		<div class="ftr-menu">
 			 <ul>
-				 <li><a href="bicycles.htm">ADMIN</a></li>	 
+				 <li><a href="bicycles.htm">LOG OUT</a></li>	 
 			 </ul>
 		</div>
 		<div class="clearfix"></div>

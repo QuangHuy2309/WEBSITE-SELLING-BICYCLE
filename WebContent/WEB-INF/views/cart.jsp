@@ -103,6 +103,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div>
 						<label class="label_cart">CUSTOMER NAME: </label>
 						<form:input path="name" type="text" placeholder="LUONG QUANG HUY" required=""/>
+						<form:errors path="name" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">Model No:      </label>
@@ -111,14 +112,17 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div>
 						<label class="label_cart">Phone Number:  </label>
 						<form:input type="number" placeholder="0967141557" required="" path="phone" />
+						<form:errors path="phone" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">Email:         </label>
 						<form:input type="email" path="email" placeholder="lqhuy2309@gmail.com" required=""/>
+						<form:errors path="email" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label>Address:       </label>
-						 <form:input type="text" path="address" placeholder="97 Man Thien Street, Hiep Phu Ward, District 9, HCM" required=""/>
+						<form:input type="text" path="address" placeholder="97 Man Thien Street, Hiep Phu Ward, District 9, HCM" required=""/>
+						<form:errors path="address" cssStyle="color:red;font-style:italic"/>
 					</div>
 				<div class="col-md-3 cart-total">
 			 <div class="clearfix"></div>

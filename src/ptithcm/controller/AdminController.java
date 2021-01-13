@@ -4,6 +4,9 @@ import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.sql.SQLException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
@@ -18,12 +21,14 @@ import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @Transactional
@@ -33,12 +38,12 @@ public class AdminController {
 	@Autowired
 	ServletContext context;
 	
-	private boolean checklogin = false; 
+	public static boolean checklogin = false; 
 	
 	@RequestMapping("admin")
 	public String admin(ModelMap model) {
 		if (checklogin == true) 
-			return "admin/admin";
+			return "admin/order";
 		else {
 			Users users = new Users();
 			model.addAttribute("login",users);
@@ -65,7 +70,7 @@ public class AdminController {
 				if (list.get(i).getUsername().equalsIgnoreCase(users.getUsername())){
 					if (list.get(i).getPassword().equalsIgnoreCase(users.getPassword())) {
 						checklogin = true;
-						return "admin/admin";
+						return "admin/order";
 					}
 					else {
 						model.addAttribute("message","WRONG PASSWORD");
@@ -78,6 +83,49 @@ public class AdminController {
 			}
 		}
 		return "admin/login";
+	}
+	
+	@RequestMapping("changetoproduct")
+	public String changetoproduct(ModelMap model) {
+		if (checklogin == true) 
+			return "admin/product";
+		else {
+			Users users = new Users();
+			model.addAttribute("login",users);
+			return "admin/login";
+		}
+	}
+	
+	@RequestMapping("changetoorder")
+	public String changetoorder(ModelMap model) {
+		if (checklogin == true) 
+			return "admin/order";
+		else {
+			Users users = new Users();
+			model.addAttribute("login",users);
+			return "admin/login";
+		}
+	}
+	@RequestMapping("order")
+	public String order(ModelMap model) {
+		if (checklogin == true) 
+			return "admin/order";
+		else {
+			Users users = new Users();
+			model.addAttribute("login",users);
+			return "admin/login";
+		}
+	}
+	
+	@RequestMapping("product")
+	public String product(ModelMap model) {
+		if (checklogin == true) 
+			return "admin/product";
+		else {
+			Users users = new Users();
+			model.addAttribute("login",users);
+			return "admin/login";
+		}
 	}
 	@RequestMapping(value="editproduct", method=RequestMethod.GET)
 	public String edit(ModelMap model, @RequestParam("id") String id) {
@@ -97,7 +145,17 @@ public class AdminController {
 		}
 	}
 	@RequestMapping(value="editproduct", method=RequestMethod.POST)
-	public String edit1(ModelMap model, @ModelAttribute("bike") Products products) {
+	public String edit1(ModelMap model, @ModelAttribute("bike") Products products,BindingResult error) {
+//		if (products.getId().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN PRODUCT'S ID!");
+//		else if (products.getName().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN PRODUCT'S NAME!");
+//		else if (products.getType().isEmpty() == true) model.addAttribute("message","PLEASE CHOOSE PRODUCT'S TYPE!");
+		
+	
+		if (products.getName().isEmpty() == true) error.rejectValue("name","products","PLEASE FILL IN PRODUCT'S NAME!");
+		else if (products.getType().isEmpty() == true) error.rejectValue("type","products","PLEASE CHOOSE PRODUCT'S TYPE!");
+		else if (products.getBrand().isEmpty() == true) error.rejectValue("brand","products","PLEASE FILL IN PRODUCT'S BRAND!");
+		if (error.hasErrors()) model.addAttribute("message","PLEASE CORRECT AND TRY AGAIN!");
+		else {
 		Session session = factory.openSession();
 		Transaction transaction = session.beginTransaction();
 		
@@ -113,7 +171,34 @@ public class AdminController {
 			System.out.println(e.getMessage());
 		}
 		session.close();
+		}
 		return "admin/edit";
+	}
+
+	@RequestMapping(value="deleteproduct", method=RequestMethod.GET)
+	public String deleteproduct(ModelMap model,RedirectAttributes redirect, @RequestParam("id") String id) {
+		Session session = factory.openSession();
+		Transaction transaction = session.beginTransaction();
+		String hql = "DELETE FROM Products WHERE id= '" + id+"'";
+		Query query = session.createQuery(hql);
+		try {
+			int rows = query.executeUpdate();
+			transaction.commit();
+			if (rows != 0)
+				{
+				model.addAttribute("message","DELETE PRODUCT SUCCESS!");
+				redirect.addFlashAttribute("message","DELETE PRODUCT SUCCESS!");
+				}
+		} catch (Exception e) {
+			// TODO: handle exception
+			transaction.rollback();
+			model.addAttribute("message","DELETE PRODUCT FAILED! THIS PRODUCT IS HAVING ORDER!");
+			redirect.addFlashAttribute("message","DELETE PRODUCT FAILED! THIS PRODUCT IS HAVING ORDER!");
+		}
+		finally {
+			session.close();
+		}
+		return "redirect:/product.htm";
 	}
 	@RequestMapping(value="insert", method=RequestMethod.GET)
 	public String insert(ModelMap model) {
@@ -128,8 +213,17 @@ public class AdminController {
 		}
 	}
 	@RequestMapping(value="insert", method=RequestMethod.POST)
-	public String insert1(ModelMap model, @ModelAttribute("bike") Products products) {
-		if (checkId(products.getId()) == true) model.addAttribute("message","MODEL ALREADY EXISTS, PLEASE CHOOSE ANOTHER MODEL!");
+	public String insert1(ModelMap model, @ModelAttribute("bike") Products products,BindingResult error) {
+		if (checkId(products.getId()) == true) error.rejectValue("id","products","MODEL ALREADY EXISTS!");
+//		else if (products.getId().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN PRODUCT'S ID!");
+//		else if (products.getName().isEmpty() == true) model.addAttribute("message","PLEASE FILL IN PRODUCT'S NAME!");
+//		else if (products.getType().isEmpty() == true) model.addAttribute("message","PLEASE CHOOSE PRODUCT'S TYPE!");
+		System.out.println(products.getType());
+		if (products.getId().isEmpty() == true) error.rejectValue("id","products","PLEASE FILL IN PRODUCT'S ID!");
+		else if (products.getName().isEmpty() == true) error.rejectValue("name","products","PLEASE FILL IN PRODUCT'S NAME!");
+		else if (products.getType().isEmpty() == true) error.rejectValue("type","products","PLEASE CHOOSE PRODUCT'S TYPE!");
+		else if (products.getBrand().isEmpty() == true) error.rejectValue("brand","products","PLEASE FILL IN PRODUCT'S BRAND");
+		if (error.hasErrors()) model.addAttribute("message","PLEASE CORRECT AND TRY AGAIN!");
 		else {	
 			Session session = factory.openSession();
 			Transaction transaction = session.beginTransaction();
@@ -157,35 +251,7 @@ public class AdminController {
 		}		
 		return "admin/insert";
 	}
-//	@RequestMapping(value="insert", method=RequestMethod.POST)
-//	public String insert1(ModelMap model, @ModelAttribute("bike") Products products) {
-//		if (checkId(products.getId()) == true) model.addAttribute("message","MODEL ALREADY EXISTS, PLEASE CHOOSE ANOTHER MODEL!");
-//		else {	
-//			Session session = factory.openSession();
-//			Transaction transaction = session.beginTransaction();
-//			String hql = "INSERT INTO Products (id, name, quantity, type, price, brand, description, photo1, photo2, photo3, photo4) VALUES (" + "'"
-//					+products.getId()+"','"+products.getName()+"',"+products.getQuantity()+",'"+products.getType()+"',"+products.getPrice()+",'"+products.getBrand()
-//					+"','"+products.getDescription()+"','"+products.getPhoto1()+"','"+products.getPhoto2()+"','"+products.getPhoto3()+"','"+products.getPhoto4()+"')";
-//			Query query = session.createSQLQuery(hql);
-//			System.out.println(hql);
-//			try {
-//				int rows = query.executeUpdate();
-//				transaction.commit();
-//				if (rows != 0) model.addAttribute("message","INSERT SUCCESS!");
-//				model.addAttribute("message","ADDING SUCCESS!");
-//			} catch (Exception e) {
-//				// TODO: handle exception
-//				transaction.rollback();
-//				System.out.print(e.getMessage());
-//				model.addAttribute("message","ADDING FAILED!");
-//			}
-//			finally {
-//				session.close();
-//			}
-//					
-//		}		
-//		return "admin/insert";
-//	}
+
 	public boolean checkId(String id) {
 		boolean check = false;
 		Session session = factory.getCurrentSession();
@@ -200,13 +266,20 @@ public class AdminController {
 	}
 	@RequestMapping(value="importfile", method=RequestMethod.GET)
 	public String importFile(ModelMap model) {
-		return "admin/importfile";
+		if (checklogin == true) 
+			return "admin/importfile";
+		else {
+			Users users = new Users();
+			model.addAttribute("login",users);
+			return "admin/login";
+		}
+		
 	}
 	@RequestMapping(value="importfile", method=RequestMethod.POST)
 	public String importFile1(ModelMap model, @ModelAttribute("photo1") MultipartFile photo1, @ModelAttribute("photo2") MultipartFile photo2
 			, @ModelAttribute("photo3") MultipartFile photo3, @ModelAttribute("photo4") MultipartFile photo4) {
 		if(photo1.isEmpty() || photo2.isEmpty() || photo3.isEmpty() || photo4.isEmpty()) {
-			model.addAttribute("message","Please choose a image!");
+			model.addAttribute("message","Please choose 4 images!");
 		}
 		else if(((photo1.getContentType().contains("jpg")) || (photo1.getContentType().contains("jpeg"))) 
 				&& ((photo2.getContentType().contains("jpg")) || (photo2.getContentType().contains("jpeg")))
@@ -214,19 +287,22 @@ public class AdminController {
 								&& ((photo4.getContentType().contains("jpg")) || (photo4.getContentType().contains("jpeg")))
 										){
 			try {
-				String photoPath1= context.getRealPath("/images/"+photo1.getOriginalFilename());
+		        Date date = Calendar.getInstance().getTime();  
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");  
+				String strDate = dateFormat.format(date);
+				String photoPath1= context.getRealPath("/images/"+strDate+"a");
 				photo1.transferTo(new File(photoPath1));
-				String photoPath2= context.getRealPath("/images/"+photo2.getOriginalFilename());
+				String photoPath2= context.getRealPath("/images/"+strDate+"b");
 				photo2.transferTo(new File(photoPath2));
-				String photoPath3= context.getRealPath("/images/"+photo3.getOriginalFilename());
+				String photoPath3= context.getRealPath("/images/"+strDate+"c");
 				photo3.transferTo(new File(photoPath3));
-				String photoPath4= context.getRealPath("/images/"+photo4.getOriginalFilename());
+				String photoPath4= context.getRealPath("/images/"+strDate+"d");
 				photo4.transferTo(new File(photoPath4));
 				Products products = new Products();
-				products.setPhoto1(photoPath1);
-				products.setPhoto2(photoPath2);
-				products.setPhoto3(photoPath3);
-				products.setPhoto4(photoPath4);
+				products.setPhoto1("images/"+strDate+"a");
+				products.setPhoto2("images/"+strDate+"b");
+				products.setPhoto3("images/"+strDate+"c");
+				products.setPhoto4("images/"+strDate+"d");
 				model.addAttribute("bike",products);
 				return "admin/insert";
 			} catch (Exception e) {
@@ -235,12 +311,15 @@ public class AdminController {
 				System.out.println(e.toString());
 			}
 		}
+		else {
+			model.addAttribute("message","DOES NOT SUPPORT THIS FILE FORMAT! PLEASE SELECT JPG OR JPEG");
+		}
 		return "admin/importfile";
 	}
 	
 	@RequestMapping(value="editstatus", method=RequestMethod.GET)
 	public String changeStatus(ModelMap model, @RequestParam("id") String id) {
-		if (checklogin == true) {
+		
 			Session session = factory.openSession();
 			Transaction transaction = session.beginTransaction();
 			String hql = "UPDATE Orders SET status= '1' where id= '" + id+"'";
@@ -258,14 +337,33 @@ public class AdminController {
 				session.close();
 			}
 			return "redirect:/admin.htm";
-		}
-		else {
-			Users users = new Users();
-			model.addAttribute("login",users);
-			return "admin/login";
-		}
+		
+		
 	}
 	
+	@RequestMapping(value="deleteorder", method=RequestMethod.GET)
+	public String deleteorder(ModelMap model, @RequestParam("id") String id) {
+		
+			Session session = factory.openSession();
+			Transaction transaction = session.beginTransaction();
+			String hql = "DELETE FROM Orders WHERE id= '" + id+"'";
+			Query query = session.createQuery(hql);
+			try {
+				int rows = query.executeUpdate();
+				transaction.commit();
+				if (rows != 0) model.addAttribute("message","DELETE ORDER SUCCESS!");
+			} catch (Exception e) {
+				// TODO: handle exception
+				transaction.rollback();
+				model.addAttribute("message","DELETE ORDER FAILED!");
+			}
+			finally {
+				session.close();
+			}
+			return "redirect:/admin.htm";
+		
+		
+	}
 	
 	@ModelAttribute("products")
 	public List<Products> getProducts(){

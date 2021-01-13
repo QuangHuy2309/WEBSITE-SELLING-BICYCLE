@@ -118,7 +118,12 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 							<h4></h4>
 							<p><fmt:formatNumber value="${bike.price}" type="currency" /></p>
 							<div class="btn_form">
+								<c:if test="${bike.quantity > 0}" >
 								<a href="cart.htm?id=${bike.id}">buy now</a>
+								</c:if>
+								<c:if test="${bike.quantity == 0}" >
+								<a href="#">Out of stock</a>
+								</c:if>
 							</div>
 							<div class="bike-type">
 							<p>TYPE  ::<a href="#">${bike.type}</a></p>

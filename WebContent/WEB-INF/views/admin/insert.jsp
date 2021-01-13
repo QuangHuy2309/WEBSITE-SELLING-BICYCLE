@@ -64,7 +64,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="contact">
 	<div class="container">
 		<div class="cart-top">
-			<a href="admin.htm"><< BACK TO ADMIN PAGE</a>
+			<a href="product.htm"><< BACK TO PRODUCTS PAGE</a>
 		 </div>	
 		 	<form:form action="insert.htm" modelAttribute="bike">
 		 		<h1>PRODUCT DETAILS</h1>
@@ -74,10 +74,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		 			<div>
 		 				<label class="label_cart">MODEL: </label>
 						<form:input path="id" type="text" />
+						<form:errors path="id" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
-						<label class="label_cart">PRODUCT NAME: </label>
+						<label class="label_cart">PRODUCT NAME:</label>
+						<form:errors path="name" cssStyle="color:red;font-style:italic"/>
 						<form:input path="name" class="user" type="text" required="" />
+						
 					</div>
 					<div>
 						<label class="label_cart">QUANTITY: </label>
@@ -88,14 +91,16 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 						<form:radiobutton path="type" value="Mountain" label="Mountain Bike" />
 						<form:radiobutton path="type" value="Road" label="Road Bike" />
 						<form:radiobutton path="type" value="Street" label="Street Bike" />
+						<form:errors path="type" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">PRICE: </label>
-						<form:input path="price" type="number" min="1000000" step="100000"/>
+						<form:input path="price" type="number" min="100000" step="10000"/>
 					</div>
 					<div>
 						<label class="label_cart">BRAND: </label>
 						<form:input path="brand" type="text" />
+						<form:errors path="brand" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">DESCRIPTION: </label>
@@ -130,7 +135,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 		<div class="ftr-menu">
 			 <ul>
-				 <li><a href="bicycles.htm">ADMIN</a></li>	 
+				 <li><a href="bicycles.htm">LOG OUT</a></li>	 
 			 </ul>
 		</div>
 		<div class="clearfix"></div>

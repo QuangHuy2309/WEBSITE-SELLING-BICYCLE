@@ -64,7 +64,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 <div class="contact">
 	<div class="container">
 		<div class="cart-top">
-			<a href="admin.htm"><< BACK TO ADMIN PAGE</a>
+			<a href="product.htm"><< BACK TO PRODUCTS PAGE</a>
 		 </div>	
 		 	<form:form action="editproduct.htm" modelAttribute="bike">
 		 		<h1>PRODUCT DETAILS</h1>
@@ -74,10 +74,13 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		 			<div>
 		 				<label class="label_cart">MODEL: </label>
 						<form:input path="id" type="text" readonly="true" />
+
 					</div>
 					<div>
 						<label class="label_cart">PRODUCT NAME: </label>
+						<form:errors path="name" cssStyle="color:red;font-style:italic"/>
 						<form:input path="name" class="user" type="text" required="" />
+						
 					</div>
 					<div>
 						<label class="label_cart">QUANTITY: </label>
@@ -85,7 +88,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 					<div>
 						<label class="label_cart">TYPE: </label>
-						<form:input path="type" type="text" />
+						<form:radiobutton path="type" value="Mountain" label="Mountain Bike" />
+						<form:radiobutton path="type" value="Road" label="Road Bike" />
+						<form:radiobutton path="type" value="Street" label="Street Bike" />
+						<form:errors path="type" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">PRICE: </label>
@@ -94,6 +100,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					<div>
 						<label class="label_cart">BRAND: </label>
 						<form:input path="brand" type="text" />
+						<form:errors path="brand" cssStyle="color:red;font-style:italic"/>
 					</div>
 					<div>
 						<label class="label_cart">DESCRIPTION: </label>
@@ -101,10 +108,10 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 					</div>
 					<div>
 						<label class="label_cart">PHOTO LINK: </label>
-						<form:input path="photo1" type="text" />
-						<form:input path="photo2" type="text" />
-						<form:input path="photo3" type="text" />
-						<form:input path="photo4" type="text" />
+						<form:input path="photo1" type="text" readonly="true"/>
+						<form:input path="photo2" type="text" readonly="true"/>
+						<form:input path="photo3" type="text" readonly="true"/>
+						<form:input path="photo4" type="text" readonly="true"/>
 					</div>						
 					<div class="clearfix"></div>
 					<br>
@@ -120,7 +127,7 @@ Smartphone Compatible web template, free webdesigns for Nokia, Samsung, LG, Sony
 		</div>
 		<div class="ftr-menu">
 			 <ul>
-				 <li><a href="bicycles.htm">ADMIN</a></li>	 
+				 <li><a href="bicycles.htm">LOG OUT</a></li>	 
 			 </ul>
 		</div>
 		<div class="clearfix"></div>

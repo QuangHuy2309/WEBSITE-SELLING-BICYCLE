@@ -17,8 +17,13 @@ body a{
 	-o-transition:0.5s all;
 	-ms-transition:0.5s all;
 }
-h1,h2,h3,h4,h5,h6{
-	margin:0;			   
+h1,h2,h3,h5,h6{
+	margin:0;	
+			   
+}
+h4{
+	margin:0;	
+	width: 190px;
 }	
 p{
 	margin:0;
@@ -35,7 +40,7 @@ padding:0;
 }
 .label_cart{
 	display: block;
-	width: 120px;
+	width: 130px;
 }
 .banner-bg2 {
 	background:url(../images/bg2.jpg) no-repeat;
@@ -441,6 +446,9 @@ select{
 .contact textarea {
 	height:170px;
 }
+*[id$=.errors]{
+color:red; font-style: italic;
+}
 .contact form input[type="submit"] {
   color: #fff;
   background: #b7b7b7;
@@ -549,6 +557,7 @@ select{
 .bike-cost{
 	background:#b7b7b7;
 	padding:10px 1em;
+	height: 110px;
 }
 .bike-mdl{
 	float:left;
@@ -1329,7 +1338,9 @@ h4.last-price{
 .cart-total {
   padding-top: 26px;
   border-left: 1px solid;
+  width: 400px;
 }
+
 a.order {
   background:#333;
   padding: 10px 1.5em;
